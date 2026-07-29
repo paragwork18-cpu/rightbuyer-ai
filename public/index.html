@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RightBuyer AI – Find Your Perfect Customers</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #059669;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    header p { color: var(--muted); font-size: 0.95rem; }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .step-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    h2 { font-size: 1.25rem; margin-bottom: 12px; }
+    label { display: block; font-weight: 500; margin-bottom: 6px; font-size: 0.9rem; }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+      transition: border 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary {
+      background: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-secondary:hover { background: #eff6ff; }
+    .hidden { display: none !important; }
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .persona {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: #f8fafc;
+    }
+    .persona h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--primary); }
+    .persona .tag {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e40af;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+    .channel-list { list-style: none; }
+    .channel-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .channel-list li:last-child { border-bottom: none; }
+    .rank {
+      font-weight: 700;
+      color: var(--primary);
+      width: 28px;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .badge.mid { background: #fef3c7; color: #92400e; }
+    .msg-box {
+      background: #f1f5f9;
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+    .test-plan {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .test-plan h4 { color: var(--success); margin-bottom: 8px; }
+    .test-plan ol { padding-left: 20px; font-size: 0.9rem; }
+    .test-plan li { margin-bottom: 6px; }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>RightBuyer AI</h1>
+      <p>Find your perfect customers in minutes — not months. Affordable. Simple. Effective.</p>
+    </header>
+
+    <!-- INPUT STEP -->
+    <div id="input-card" class="card">
+      <div class="step-label">Step 1 of 3</div>
+      <h2>Tell us about your product</h2>
+      <p style="color:var(--muted);margin-bottom:16px;font-size:0.9rem;">Paste a product page URL or describe it. We’ll find who actually wants to buy it.</p>
+      
+      <label for="product-name">Product Name</label>
+      <input type="text" id="product-name" placeholder="e.g. EcoBrew Portable Coffee Maker" value="EcoBrew Portable Coffee Maker" />
+
+      <label for="product-desc">Short Description</label>
+      <textarea id="product-desc" placeholder="What does it do? Who is it for? Key benefits...">Portable, battery-powered coffee maker that makes barista-quality espresso in under 3 minutes. Perfect for camping, travel, office, or small kitchens. No electricity needed. 15oz capacity, lightweight, USB-C rechargeable.</textarea>
+
+      <label for="price">Price Range (USD)</label>
+      <select id="price">
+        <option value="under-30">Under $30</option>
+        <option value="30-80" selected>$30 – $80</option>
+        <option value="80-200">$80 – $200</option>
+        <option value="200-plus">$200+</option>
+      </select>
+
+      <label for="category">Category</label>
+      <select id="category">
+        <option value="home">Home & Kitchen</option>
+        <option value="outdoor" selected>Outdoor / Travel</option>
+        <option value="beauty">Beauty & Personal Care</option>
+        <option value="tech">Tech / Gadgets</option>
+        <option value="fashion">Fashion</option>
+        <option value="health">Health & Fitness</option>
+        <option value="other">Other</option>
+      </select>
+
+      <button class="btn" id="analyze-btn" onclick="runAnalysis()">
+        Find My Right Customers →
+      </button>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading-card" class="card loading hidden">
+      <div class="spinner"></div>
+      <p>Analyzing product signals, public reviews patterns & intent data...</p>
+      <p style="font-size:0.85rem;color:var(--muted);margin-top:8px;">This usually takes 8–12 seconds</p>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results" class="hidden">
+      <!-- Personas -->
+      <div class="card">
+        <div class="step-label">Your Ideal Customers</div>
+        <h2>Top 3 Customer Personas</h2>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:8px;">These people are most likely to buy based on product fit + real buyer signals.</p>
+        <div class="persona-grid" id="persona-grid"></div>
+      </div>
+
+      <!-- Channels -->
+      <div class="card">
+        <div class="step-label">Where to Find Them Cheaply</div>
+        <h2>Ranked Acquisition Channels</h2>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:12px;">Sorted by expected cost-efficiency for <strong>your</strong> product (not generic trends).</p>
+        <ul class="channel-list" id="channel-list"></ul>
+      </div>
+
+      <!-- Messaging -->
+      <div class="card">
+        <div class="step-label">What to Say</div>
+        <h2>Ready-to-Use Messaging Pack</h2>
+        <div id="messaging"></div>
+      </div>
+
+      <!-- Test Plan -->
+      <div class="card">
+        <div class="step-label">Start Today</div>
+        <h2>7-Day Low-Budget Test Plan</h2>
+        <div class="test-plan" id="test-plan"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" onclick="alert('In the real product this downloads a clean PDF + CSV of all personas, channels & messaging.')">Download Full Report (PDF)</button>
+        <button class="btn btn-secondary" onclick="resetAll()">Analyze Another Product</button>
+      </div>
+    </div>
+
+    <footer>
+      RightBuyer AI Prototype • Built for affordable customer discovery<br>
+      Free tier available • Pro from $19/mo • No credit card required to start
+    </footer>
+  </div>
+
+  <script>
+    let currentData = null;
+
+    async function runAnalysis() {
+      const name = document.getElementById('product-name').value.trim();
+      const desc = document.getElementById('product-desc').value.trim();
+      const price = document.getElementById('price').value;
+      const category = document.getElementById('category').value;
+
+      if (!name || !desc) {
+        alert('Please enter product name and description.');
+        return;
+      }
+
+      document.getElementById('input-card').classList.add('hidden');
+      document.getElementById('loading-card').classList.remove('hidden');
+      document.getElementById('results').classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, desc, price, category })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Something went wrong.');
+        }
+
+        currentData = data;
+        document.getElementById('loading-card').classList.add('hidden');
+        renderResults();
+        document.getElementById('results').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        document.getElementById('loading-card').classList.add('hidden');
+        document.getElementById('input-card').classList.remove('hidden');
+        alert('Sorry — ' + (err.message || 'the analysis failed. Please try again.'));
+      }
+    }
+
+    function renderResults() {
+      const data = currentData;
+      // Personas
+      const grid = document.getElementById('persona-grid');
+      grid.innerHTML = data.personas.map(p => `
+        <div class="persona">
+          <h3>${p.name}</h3>
+          <div style="margin-bottom:8px;">
+            ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+          <p style="font-size:0.85rem;margin-bottom:6px;"><strong>Age:</strong> ${p.age}</p>
+          <p style="font-size:0.85rem;margin-bottom:6px;"><strong>Traits:</strong> ${p.traits.join(' • ')}</p>
+          <p style="font-size:0.85rem;margin-bottom:6px;"><strong>Pain:</strong> ${p.pain}</p>
+          <p style="font-size:0.85rem;"><strong>Buying trigger:</strong> ${p.trigger}</p>
+        </div>
+      `).join('');
+
+      // Channels
+      const list = document.getElementById('channel-list');
+      list.innerHTML = data.channels.map((c, i) => `
+        <li>
+          <div style="display:flex;align-items:flex-start;gap:12px;flex:1;">
+            <span class="rank">${i + 1}</span>
+            <div>
+              <strong>${c.name}</strong>
+              <div style="font-size:0.85rem;color:var(--muted);margin-top:2px;">${c.why}</div>
+              <div style="font-size:0.8rem;margin-top:4px;">Cost: ${c.cost}</div>
+            </div>
+          </div>
+          <span class="badge ${c.badgeClass}">${c.badge}</span>
+        </li>
+      `).join('');
+
+      // Messaging
+      const msg = document.getElementById('messaging');
+      msg.innerHTML = data.messaging.map(m => `
+        <div class="msg-box">
+          <strong>${m.title}</strong><br>
+          ${m.text}
+        </div>
+      `).join('');
+
+      // Test plan
+      document.getElementById('test-plan').innerHTML = data.testPlan;
+    }
+
+    function resetAll() {
+      document.getElementById('results').classList.add('hidden');
+      document.getElementById('input-card').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
